@@ -1,22 +1,15 @@
 [build]
   command = "pnpm run build"
-  publish = "/build/client"
-  functions = "/netlify/functions"
-  
+  publish = "public"
+
 [build.environment]
   NODE_VERSION = "18.18.0"
   NPM_FLAGS = "--version"
 
-[dev]
-  command = "pnpm run dev"
-  port = 5173
-  targetPort = 5173
-
 [[redirects]]
   from = "/*"
-  to = "/.netlify/functions/server.cjs"
+  to = "/index.html"
   status = 200
-  force = true
 
 [[headers]]
   for = "/build/*"
@@ -29,8 +22,4 @@
     "X-Frame-Options" = "DENY"
     "X-XSS-Protection" = "1; mode=block"
     "X-Content-Type-Options" = "nosniff"
-    "Referrer-Policy" = "strict-origin-when-cross-origin"
-
-[functions]
-  node_bundler = "esbuild"
-  external_node_modules = ["@remix-run/react"] 
+    "Referrer-Policy" = "strict-origin-when-cross-origin" 
