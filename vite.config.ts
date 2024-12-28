@@ -8,13 +8,27 @@ import { resolve } from 'path';
 export default defineConfig({
   plugins: [
     nodePolyfills({
-      include: ['path', 'buffer'],
+      include: ['path', 'buffer', 'process'],
+      globals: {
+        process: true,
+      },
+      protocolImports: true,
     }),
-    remixVitePlugin(),
-    UnoCSS(),
+    remixVitePlugin({
+      ssr: true,
+      serverModuleFormat: 'cjs',
+    }),
+    UnoCSS({
+      mode: 'global',
+    }),
     tsconfigPaths(),
   ],
   css: {
+    preprocessorOptions: {
+      scss: {
+        includePaths: ['node_modules'],
+      },
+    },
     modules: {
       localsConvention: 'camelCase',
     },
@@ -22,11 +36,17 @@ export default defineConfig({
   resolve: {
     alias: {
       '~': resolve(__dirname, './app'),
+      '/icons': resolve(__dirname, './public/icons'),
     },
   },
   build: {
+    target: 'esnext',
     rollupOptions: {
-      external: ['virtual:uno.css?__remix_sideEffect__'],
+      external: ['path', 'virtual:uno.css?__remix_sideEffect__', 'virtual:uno.css', 'istextorbinary'],
     },
+    assetsInlineLimit: 0,
+  },
+  optimizeDeps: {
+    exclude: ['virtual:uno.css?__remix_sideEffect__'],
   },
 });
