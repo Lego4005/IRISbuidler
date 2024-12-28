@@ -5,6 +5,7 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import * as sass from 'sass-embedded';
 import { resolve } from 'path';
+import autoprefixer from 'autoprefixer';
 
 export default defineConfig({
   plugins: [
@@ -27,10 +28,18 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         implementation: sass,
+        sassOptions: {
+          includePaths: ['node_modules'],
+        },
       },
     },
     modules: {
       localsConvention: 'camelCase',
+    },
+    postcss: {
+      plugins: [
+        autoprefixer(),
+      ],
     },
   },
   build: {
