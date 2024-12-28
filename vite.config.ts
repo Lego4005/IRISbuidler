@@ -6,6 +6,7 @@ import { optimizeCssModules } from 'vite-plugin-optimize-css-modules';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import * as sass from 'sass-embedded';
 import { execSync } from 'child_process';
+import { resolve } from 'path';
 
 // Get git hash with fallback
 const getGitHash = () => {
@@ -17,6 +18,8 @@ const getGitHash = () => {
 };
 
 export default defineConfig((config) => {
+  const isProduction = config.mode === 'production';
+  
   return {
     define: {
       __COMMIT_HASH: JSON.stringify(getGitHash()),
@@ -29,6 +32,7 @@ export default defineConfig((config) => {
           assetFileNames: 'assets/[name]-[hash][extname]',
         },
       },
+      cssCodeSplit: true,
     },
     plugins: [
       nodePolyfills({
@@ -46,7 +50,7 @@ export default defineConfig((config) => {
       UnoCSS(),
       tsconfigPaths(),
       chrome129IssuePlugin(),
-      config.mode === 'production' && optimizeCssModules({ apply: 'build' }),
+      isProduction && optimizeCssModules({ apply: 'build' }),
     ],
     envPrefix: [
       'VITE_',
@@ -60,16 +64,18 @@ export default defineConfig((config) => {
         scss: {
           api: 'modern-compiler',
           implementation: sass,
+          additionalData: '@use "sass:math";',
         },
       },
       modules: {
         localsConvention: 'camelCase',
+        generateScopedName: isProduction ? '[hash:base64:8]' : '[name]__[local]',
       },
     },
     resolve: {
       alias: {
-        '~/': '/app/',
-        '/icons/': '/icons/',
+        '~': resolve(__dirname, './app'),
+        '/icons': resolve(__dirname, './icons'),
       },
     },
   };
