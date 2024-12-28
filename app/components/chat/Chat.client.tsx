@@ -22,6 +22,7 @@ import { useSettings } from '~/lib/hooks/useSettings';
 import type { ProviderInfo } from '~/types/model';
 import { useSearchParams } from '@remix-run/react';
 import { createSampler } from '~/utils/sampler';
+import { hasRemainingFreeGenerations, incrementFreeGenerations, sessionStore, FREE_GENERATIONS_LIMIT } from '~/lib/stores/session';
 
 const toastAnimation = cssTransition({
   enter: 'animated fadeInRight',
@@ -118,6 +119,7 @@ export const ChatImpl = memo(
     const files = useStore(workbenchStore.files);
     const actionAlert = useStore(workbenchStore.alert);
     const { activeProviders, promptId } = useSettings();
+    const session = useStore(sessionStore);
 
     const [model, setModel] = useState(() => {
       const savedModel = Cookies.get('selectedModel');
@@ -233,6 +235,23 @@ export const ChatImpl = memo(
         return;
       }
 
+      if (!hasRemainingFreeGenerations()) {
+        toast.error(
+          'You have used all your free generations. Please register to continue using the service.',
+          {
+            autoClose: false,
+            closeOnClick: false,
+          }
+        );
+        return;
+      }
+
+      const session = sessionStore.get();
+      if (!session.isAuthenticated) {
+        const remaining = FREE_GENERATIONS_LIMIT - session.freeGenerations;
+        toast.info(`You have ${remaining} free generations remaining. Register to get unlimited access.`);
+      }
+
       /**
        * @note (delm) Usually saving files shouldn't take long but it may take longer if there
        * many unsaved files. In that case we need to block user input and show an indicator
@@ -299,6 +318,13 @@ export const ChatImpl = memo(
       resetEnhancer();
 
       textareaRef.current?.blur();
+
+      try {
+        await incrementFreeGenerations();
+      } catch (error) {
+        logger.error('Error incrementing free generations', error);
+        toast.error('Error incrementing free generations');
+      }
     };
 
     /**
