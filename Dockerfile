@@ -1,83 +1,20 @@
-ARG BASE=node:20.18.0
-FROM ${BASE} AS base
-
+FROM node:18.18.0-slim as base
 WORKDIR /app
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
-# Install dependencies (this step is cached as long as the dependencies don't change)
+FROM base as bolt-ai-development
 COPY package.json pnpm-lock.yaml ./
-
-RUN corepack enable pnpm && pnpm install
-
-# Copy the rest of your app's source code
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 COPY . .
-
-# Expose the port the app runs on
 EXPOSE 5173
+CMD ["pnpm", "run", "dev"]
 
-# Production image
-FROM base AS bolt-ai-production
-
-# Define environment variables with default values or let them be overridden
-ARG GROQ_API_KEY
-ARG HuggingFace_API_KEY
-ARG OPENAI_API_KEY
-ARG ANTHROPIC_API_KEY
-ARG OPEN_ROUTER_API_KEY
-ARG GOOGLE_GENERATIVE_AI_API_KEY
-ARG OLLAMA_API_BASE_URL
-ARG TOGETHER_API_KEY
-ARG TOGETHER_API_BASE_URL
-ARG VITE_LOG_LEVEL=debug
-ARG DEFAULT_NUM_CTX
-
-ENV WRANGLER_SEND_METRICS=false \
-    GROQ_API_KEY=${GROQ_API_KEY} \
-    HuggingFace_KEY=${HuggingFace_API_KEY} \
-    OPENAI_API_KEY=${OPENAI_API_KEY} \
-    ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY} \
-    OPEN_ROUTER_API_KEY=${OPEN_ROUTER_API_KEY} \
-    GOOGLE_GENERATIVE_AI_API_KEY=${GOOGLE_GENERATIVE_AI_API_KEY} \
-    OLLAMA_API_BASE_URL=${OLLAMA_API_BASE_URL} \
-    TOGETHER_API_KEY=${TOGETHER_API_KEY} \
-    TOGETHER_API_BASE_URL=${TOGETHER_API_BASE_URL} \
-    VITE_LOG_LEVEL=${VITE_LOG_LEVEL} \
-    DEFAULT_NUM_CTX=${DEFAULT_NUM_CTX}
-
-# Pre-configure wrangler to disable metrics
-RUN mkdir -p /root/.config/.wrangler && \
-    echo '{"enabled":false}' > /root/.config/.wrangler/metrics.json
-
-RUN npm run build
-
-CMD [ "pnpm", "run", "dockerstart"]
-
-# Development image
-FROM base AS bolt-ai-development
-
-# Define the same environment variables for development
-ARG GROQ_API_KEY
-ARG HuggingFace 
-ARG OPENAI_API_KEY
-ARG ANTHROPIC_API_KEY
-ARG OPEN_ROUTER_API_KEY
-ARG GOOGLE_GENERATIVE_AI_API_KEY
-ARG OLLAMA_API_BASE_URL
-ARG TOGETHER_API_KEY
-ARG TOGETHER_API_BASE_URL
-ARG VITE_LOG_LEVEL=debug
-ARG DEFAULT_NUM_CTX
-
-ENV GROQ_API_KEY=${GROQ_API_KEY} \
-    HuggingFace_API_KEY=${HuggingFace_API_KEY} \
-    OPENAI_API_KEY=${OPENAI_API_KEY} \
-    ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY} \
-    OPEN_ROUTER_API_KEY=${OPEN_ROUTER_API_KEY} \
-    GOOGLE_GENERATIVE_AI_API_KEY=${GOOGLE_GENERATIVE_AI_API_KEY} \
-    OLLAMA_API_BASE_URL=${OLLAMA_API_BASE_URL} \
-    TOGETHER_API_KEY=${TOGETHER_API_KEY} \
-    TOGETHER_API_BASE_URL=${TOGETHER_API_BASE_URL} \
-    VITE_LOG_LEVEL=${VITE_LOG_LEVEL} \
-    DEFAULT_NUM_CTX=${DEFAULT_NUM_CTX}
-
-RUN mkdir -p ${WORKDIR}/run
-CMD pnpm run dev --host
+FROM base as bolt-ai-production
+COPY package.json pnpm-lock.yaml ./
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --prod
+COPY . .
+RUN pnpm run build
+EXPOSE 5173
+CMD ["pnpm", "run", "start"]
