@@ -8,24 +8,18 @@ import { resolve } from 'path';
 export default defineConfig({
   plugins: [
     nodePolyfills({
-      include: ['path', 'buffer', 'process', 'util'],
-      globals: {
-        process: true,
-      },
+      include: ['path', 'buffer', 'process'],
     }),
-    remixVitePlugin(),
+    remixVitePlugin({
+      ssr: true,
+    }),
     UnoCSS(),
     tsconfigPaths(),
   ],
   resolve: {
     alias: {
-      '~': resolve(__dirname, './app'),
-      '/icons': resolve(__dirname, './public/icons'),
-    },
-  },
-  build: {
-    rollupOptions: {
-      external: ['path', 'virtual:uno.css?__remix_sideEffect__', 'virtual:uno.css', 'istextorbinary'],
+      '~': resolve(__dirname, 'app'),
+      '/icons': resolve(__dirname, 'public/icons'),
     },
   },
 });

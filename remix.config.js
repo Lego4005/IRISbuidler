@@ -5,7 +5,6 @@ export default {
   serverBuildPath: 'netlify/functions/server/index.js',
   serverModuleFormat: 'cjs',
   serverPlatform: 'node',
-  serverMinify: false,
   appDirectory: 'app',
   assetsBuildDirectory: 'build/client',
   publicPath: '/build/',
