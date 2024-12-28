@@ -9,16 +9,36 @@ export default defineConfig({
   plugins: [
     nodePolyfills({
       include: ['path', 'buffer'],
+      globals: {
+        process: true,
+      },
     }),
-    remixVitePlugin(),
-    UnoCSS(),
+    remixVitePlugin({
+      ssr: true,
+    }),
+    UnoCSS({
+      mode: 'global',
+    }),
     tsconfigPaths(),
   ],
   css: {
+    modules: {
+      localsConvention: 'camelCase',
+    },
     preprocessorOptions: {
       scss: {
         implementation: sass,
       },
+    },
+  },
+  build: {
+    rollupOptions: {
+      external: ['path'],
+    },
+  },
+  resolve: {
+    alias: {
+      '/icons': '/icons',
     },
   },
 });
