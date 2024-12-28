@@ -44,4 +44,4 @@ export function logout() {
     ...currentState,
     isAuthenticated: false,
   });
-} 
+}

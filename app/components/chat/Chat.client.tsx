@@ -13,7 +13,6 @@ import { description, useChatHistory } from '~/lib/persistence';
 import { chatStore } from '~/lib/stores/chat';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { DEFAULT_MODEL, DEFAULT_PROVIDER, PROMPT_COOKIE_KEY, PROVIDER_LIST } from '~/utils/constants';
-import { cubicEasingFn } from '~/utils/easings';
 import { createScopedLogger, renderLogger } from '~/utils/logger';
 import { BaseChat } from './BaseChat';
 import Cookies from 'js-cookie';
@@ -22,7 +21,12 @@ import { useSettings } from '~/lib/hooks/useSettings';
 import type { ProviderInfo } from '~/types/model';
 import { useSearchParams } from '@remix-run/react';
 import { createSampler } from '~/utils/sampler';
-import { hasRemainingFreeGenerations, incrementFreeGenerations, sessionStore, FREE_GENERATIONS_LIMIT } from '~/lib/stores/session';
+import {
+  hasRemainingFreeGenerations,
+  incrementFreeGenerations,
+  sessionStore,
+  FREE_GENERATIONS_LIMIT,
+} from '~/lib/stores/session';
 
 const toastAnimation = cssTransition({
   enter: 'animated fadeInRight',
@@ -119,7 +123,6 @@ export const ChatImpl = memo(
     const files = useStore(workbenchStore.files);
     const actionAlert = useStore(workbenchStore.alert);
     const { activeProviders, promptId } = useSettings();
-    const session = useStore(sessionStore);
 
     const [model, setModel] = useState(() => {
       const savedModel = Cookies.get('selectedModel');
@@ -132,7 +135,7 @@ export const ChatImpl = memo(
 
     const { showChat } = useStore(chatStore);
 
-    const [animationScope, animate] = useAnimate();
+    const [animationScope] = useAnimate();
 
     const [apiKeys, setApiKeys] = useState<Record<string, string>>({});
 
@@ -236,13 +239,10 @@ export const ChatImpl = memo(
       }
 
       if (!hasRemainingFreeGenerations()) {
-        toast.error(
-          'You have used all your free generations. Please register to continue using the service.',
-          {
-            autoClose: false,
-            closeOnClick: false,
-          }
-        );
+        toast.error('You have used all your free generations. Please register to continue using the service.', {
+          autoClose: false,
+          closeOnClick: false,
+        });
         return;
       }
 

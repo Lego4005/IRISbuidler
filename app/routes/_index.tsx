@@ -11,7 +11,7 @@ export const meta: MetaFunction = () => {
     { name: 'description', content: 'Build your next project with IRIS - AI-powered development assistant' },
     { property: 'og:title', content: 'IRIS Builder' },
     { property: 'og:description', content: 'AI-powered development assistant for building modern web applications' },
-    { property: 'og:image', content: '/social_preview_index.jpg' }
+    { property: 'og:image', content: '/social_preview_index.jpg' },
   ];
 };
 
@@ -23,9 +23,7 @@ export default function Index() {
       <BackgroundRays />
       <Header />
       <div className="flex-1 overflow-hidden">
-        <ClientOnly fallback={<BaseChat />}>
-          {() => <Chat />}
-        </ClientOnly>
+        <ClientOnly fallback={<BaseChat />}>{() => <Chat />}</ClientOnly>
       </div>
     </div>
   );
