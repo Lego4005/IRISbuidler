@@ -16,7 +16,6 @@ const getGitHash = () => {
   }
 };
 
-
 export default defineConfig((config) => {
   return {
     define: {
@@ -25,6 +24,11 @@ export default defineConfig((config) => {
     },
     build: {
       target: 'esnext',
+      rollupOptions: {
+        output: {
+          assetFileNames: 'assets/[name]-[hash][extname]',
+        },
+      },
     },
     plugins: [
       nodePolyfills({
@@ -49,7 +53,17 @@ export default defineConfig((config) => {
       preprocessorOptions: {
         scss: {
           api: 'modern-compiler',
+          implementation: require('sass-embedded'),
         },
+      },
+      modules: {
+        localsConvention: 'camelCase',
+      },
+    },
+    resolve: {
+      alias: {
+        '~/': '/app/',
+        '/icons/': '/icons/',
       },
     },
   };
