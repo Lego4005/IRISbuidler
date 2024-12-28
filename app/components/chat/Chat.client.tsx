@@ -112,9 +112,8 @@ export const ChatImpl = memo(
     useShortcuts();
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const [chatStarted, setChatStarted] = useState(initialMessages.length > 0);
-    const [uploadedFiles, setUploadedFiles] = useState<File[]>([]); // Move here
-    const [imageDataList, setImageDataList] = useState<string[]>([]); // Move here
+    const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+    const [imageDataList, setImageDataList] = useState<string[]>([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const files = useStore(workbenchStore.files);
     const actionAlert = useStore(workbenchStore.alert);
@@ -169,7 +168,6 @@ export const ChatImpl = memo(
 
       if (prompt) {
         setSearchParams({});
-        runAnimation();
         append({
           role: 'user',
           content: [
@@ -185,10 +183,10 @@ export const ChatImpl = memo(
     const { enhancingPrompt, promptEnhanced, enhancePrompt, resetEnhancer } = usePromptEnhancer();
     const { parsedMessages, parseMessages } = useMessageParser();
 
-    const TEXTAREA_MAX_HEIGHT = chatStarted ? 400 : 200;
+    const TEXTAREA_MAX_HEIGHT = 400;
 
     useEffect(() => {
-      chatStore.setKey('started', initialMessages.length > 0);
+      chatStore.setKey('started', true);
     }, []);
 
     useEffect(() => {
@@ -228,21 +226,6 @@ export const ChatImpl = memo(
       }
     }, [input, textareaRef]);
 
-    const runAnimation = async () => {
-      if (chatStarted) {
-        return;
-      }
-
-      await Promise.all([
-        animate('#examples', { opacity: 0, display: 'none' }, { duration: 0.1 }),
-        animate('#intro', { opacity: 0, flex: 1 }, { duration: 0.2, ease: cubicEasingFn }),
-      ]);
-
-      chatStore.setKey('started', true);
-
-      setChatStarted(true);
-    };
-
     const sendMessage = async (_event: React.UIEvent, messageInput?: string) => {
       const _input = messageInput || input;
 
@@ -262,8 +245,6 @@ export const ChatImpl = memo(
       const fileModifications = workbenchStore.getFileModifcations();
 
       chatStore.setKey('aborted', false);
-
-      runAnimation();
 
       if (fileModifications !== undefined) {
         /**
@@ -366,7 +347,7 @@ export const ChatImpl = memo(
         textareaRef={textareaRef}
         input={input}
         showChat={showChat}
-        chatStarted={chatStarted}
+        chatStarted={true}
         isStreaming={isLoading}
         enhancingPrompt={enhancingPrompt}
         promptEnhanced={promptEnhanced}

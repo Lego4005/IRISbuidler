@@ -6,7 +6,13 @@ import { Header } from '~/components/header/Header';
 import BackgroundRays from '~/components/ui/BackgroundRays';
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Bolt' }, { name: 'description', content: 'Talk with Bolt, an AI assistant from StackBlitz' }];
+  return [
+    { title: 'IRIS Builder - AI-Powered Development' },
+    { name: 'description', content: 'Build your next project with IRIS - AI-powered development assistant' },
+    { property: 'og:title', content: 'IRIS Builder' },
+    { property: 'og:description', content: 'AI-powered development assistant for building modern web applications' },
+    { property: 'og:image', content: '/social_preview_index.jpg' }
+  ];
 };
 
 export const loader = () => json({});
@@ -16,7 +22,11 @@ export default function Index() {
     <div className="flex flex-col h-full w-full bg-bolt-elements-background-depth-1">
       <BackgroundRays />
       <Header />
-      <ClientOnly fallback={<BaseChat />}>{() => <Chat />}</ClientOnly>
+      <div className="flex-1 overflow-hidden">
+        <ClientOnly fallback={<BaseChat />}>
+          {() => <Chat />}
+        </ClientOnly>
+      </div>
     </div>
   );
 }
