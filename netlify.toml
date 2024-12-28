@@ -1,7 +1,7 @@
 [build]
   command = "pnpm run build"
-  publish = "build/client"
-  functions = "netlify/functions"
+  publish = "public"
+  functions = ".netlify/functions-internal"
   
 [build.environment]
   NODE_VERSION = "18.18.0"
@@ -33,4 +33,5 @@
 
 [functions]
   node_bundler = "esbuild"
+  included_files = ["server/**", "public/**"]
   external_node_modules = ["@remix-run/react"] 
