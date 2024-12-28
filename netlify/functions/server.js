@@ -9,4 +9,4 @@ exports.handler = createRequestHandler({
       event,
     };
   },
-}); 
+});
