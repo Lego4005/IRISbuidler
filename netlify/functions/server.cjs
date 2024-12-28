@@ -1,4 +1,4 @@
-const { createRequestHandler } = require('@remix-run/netlify');
+const { createRequestHandler } = require('@remix-run/cloudflare');
 const build = require('@remix-run/dev/server-build');
 
 exports.handler = createRequestHandler({
