@@ -4,7 +4,7 @@ import { defineConfig, type ViteDevServer } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { optimizeCssModules } from 'vite-plugin-optimize-css-modules';
 import tsconfigPaths from 'vite-tsconfig-paths';
-
+import * as sass from 'sass-embedded';
 import { execSync } from 'child_process';
 
 // Get git hash with fallback
@@ -40,7 +40,7 @@ export default defineConfig((config) => {
           v3_fetcherPersist: true,
           v3_relativeSplatPath: true,
           v3_throwAbortReason: true,
-          v3_lazyRouteDiscovery: true;
+          v3_lazyRouteDiscovery: true,
         },
       }),
       UnoCSS(),
@@ -59,7 +59,7 @@ export default defineConfig((config) => {
       preprocessorOptions: {
         scss: {
           api: 'modern-compiler',
-          implementation: require('sass-embedded'),
+          implementation: sass,
         },
       },
       modules: {
