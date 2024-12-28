@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1280" height="640" viewBox="0 0 1280 640" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1280" height="640" fill="#0f172a"/>
+  
+  <!-- Gradient overlay -->
+  <rect width="1280" height="640" fill="url(#gradient)" opacity="0.4"/>
+  
+  <!-- Logo -->
+  <g transform="translate(200, 120) scale(0.8)">
+    <!-- Background circle representing an iris/eye -->
+    <circle cx="256" cy="256" r="240" fill="#2563eb" opacity="0.1"/>
+    
+    <!-- Outer ring -->
+    <circle cx="256" cy="256" r="200" fill="none" stroke="#2563eb" stroke-width="24"/>
+    
+    <!-- Inner pattern representing iris texture -->
+    <circle cx="256" cy="256" r="120" fill="none" stroke="#2563eb" stroke-width="16" stroke-dasharray="40,20"/>
+    
+    <!-- Center pupil -->
+    <circle cx="256" cy="256" r="60" fill="#2563eb"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="640" y="260" font-family="Arial, sans-serif" font-size="120" font-weight="bold" text-anchor="middle" fill="#ffffff">
+    IRIS Builder
+  </text>
+  
+  <text x="640" y="380" font-family="Arial, sans-serif" font-size="40" font-weight="normal" text-anchor="middle" fill="#94a3b8">
+    AI-Powered Full-Stack Web Development
+  </text>
+  
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="gradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2563eb" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#1e40af" stop-opacity="0.1"/>
+    </linearGradient>
+  </defs>
+</svg> 
