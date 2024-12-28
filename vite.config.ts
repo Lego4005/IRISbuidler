@@ -8,7 +8,7 @@ import { resolve } from 'path';
 export default defineConfig({
   plugins: [
     nodePolyfills({
-      include: ['path', 'buffer', 'process'],
+      include: ['path', 'buffer', 'process', 'util'],
       globals: {
         process: true,
       },
@@ -26,11 +26,12 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        includePaths: ['node_modules'],
+        additionalData: '@use "sass:math";',
       },
     },
     modules: {
       localsConvention: 'camelCase',
+      generateScopedName: '[name]__[local]___[hash:base64:5]',
     },
   },
   resolve: {
@@ -38,15 +39,25 @@ export default defineConfig({
       '~': resolve(__dirname, './app'),
       '/icons': resolve(__dirname, './public/icons'),
     },
+    dedupe: ['react', 'react-dom'],
+    preserveSymlinks: true,
   },
   build: {
     target: 'esnext',
     rollupOptions: {
       external: ['path', 'virtual:uno.css?__remix_sideEffect__', 'virtual:uno.css', 'istextorbinary'],
+      output: {
+        manualChunks: undefined,
+      },
     },
+    sourcemap: true,
     assetsInlineLimit: 0,
   },
   optimizeDeps: {
     exclude: ['virtual:uno.css?__remix_sideEffect__'],
+    include: ['react', 'react-dom'],
+  },
+  ssr: {
+    noExternal: true,
   },
 });
