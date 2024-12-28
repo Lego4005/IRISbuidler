@@ -5,7 +5,8 @@
 
 [build.environment]
   NODE_VERSION = "18.18.0"
-  NPM_FLAGS = "--version"
+  PNPM_VERSION = "9.4.0"
+  NODE_OPTIONS = "--max_old_space_size=4096"
 
 [dev]
   command = "pnpm run dev"
@@ -22,6 +23,7 @@
   for = "/build/*"
   [headers.values]
     "Cache-Control" = "public, max-age=31536000, immutable"
+    "Strict-Transport-Security" = "max-age=31536000; includeSubDomains; preload"
 
 [[headers]]
   for = "/*"
@@ -29,4 +31,5 @@
     "X-Frame-Options" = "DENY"
     "X-XSS-Protection" = "1; mode=block"
     "X-Content-Type-Options" = "nosniff"
-    "Referrer-Policy" = "strict-origin-when-cross-origin" 
+    "Referrer-Policy" = "strict-origin-when-cross-origin"
+    "Content-Security-Policy" = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'" 
