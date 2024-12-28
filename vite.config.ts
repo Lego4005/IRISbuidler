@@ -36,11 +36,7 @@ export default defineConfig({
   build: {
     target: 'esnext',
     rollupOptions: {
-      external: [
-        'path',
-        'virtual:uno.css?__remix_sideEffect__',
-        'virtual:uno.css',
-      ],
+      external: ['path', 'virtual:uno.css?__remix_sideEffect__', 'virtual:uno.css'],
     },
     assetsInlineLimit: 0,
   },
