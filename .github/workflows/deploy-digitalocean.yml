@@ -1,0 +1,30 @@
+name: Deploy to DigitalOcean
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Build container image
+        run: docker build --target production -t registry.digitalocean.com/boltiris/bolt-ai:$(echo $GITHUB_SHA | head -c7) -t registry.digitalocean.com/boltiris/bolt-ai:latest .
+
+      - name: Log in to DigitalOcean Container Registry
+        run: doctl registry login --expiry-seconds 600
+
+      - name: Push image to DigitalOcean Container Registry
+        run: |
+          docker push registry.digitalocean.com/boltiris/bolt-ai:$(echo $GITHUB_SHA | head -c7)
+          docker push registry.digitalocean.com/boltiris/bolt-ai:latest
+
+      - name: Deploy to DigitalOcean App Platform
+        run: |
+          doctl apps create-deployment ${{ secrets.DIGITALOCEAN_APP_ID }} 

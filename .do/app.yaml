@@ -2,14 +2,15 @@ name: bolt-ai
 region: sfo
 services:
   - name: web
-    git:
-      branch: main
-      repo_clone_url: https://github.com/Lego4005/IRISbuidler.git
-    build_command: pnpm install && pnpm run build
-    run_command: pnpm run start
+    image:
+      registry_type: DOCR
+      repository: boltiris/bolt-ai
+      tag: latest
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    http_port: 5173
     envs:
       - key: NODE_ENV
         value: production
-    instance_count: 1
-    instance_size_slug: basic-xxs
-    http_port: 5173 
+      - key: WRANGLER_SEND_METRICS
+        value: "false" 
