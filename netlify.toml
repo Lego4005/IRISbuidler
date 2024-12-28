@@ -1,0 +1,20 @@
+[build]
+  command = "pnpm run build"
+  publish = "build/client"
+  
+[build.environment]
+  NODE_VERSION = "18.18.0"
+  NPM_FLAGS = "--version"
+
+[dev]
+  command = "pnpm run dev"
+  port = 5173
+  targetPort = 5173
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[functions]
+  node_bundler = "esbuild" 
