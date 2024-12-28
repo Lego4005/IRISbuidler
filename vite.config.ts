@@ -27,6 +27,7 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         additionalData: '@use "sass:math";',
+        javascriptEnabled: true,
       },
     },
     modules: {
@@ -59,5 +60,13 @@ export default defineConfig({
   },
   ssr: {
     noExternal: true,
+  },
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+  },
+  server: {
+    fs: {
+      strict: false,
+    },
   },
 });
