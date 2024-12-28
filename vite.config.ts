@@ -37,9 +37,7 @@ export default defineConfig({
       localsConvention: 'camelCase',
     },
     postcss: {
-      plugins: [
-        autoprefixer(),
-      ],
+      plugins: [autoprefixer()],
     },
   },
   build: {
