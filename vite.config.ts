@@ -20,37 +20,36 @@ export default defineConfig({
     }),
     UnoCSS({
       mode: 'global',
-      include: [/\.tsx$/, /\.ts$/, /\.jsx$/, /\.js$/],
     }),
     tsconfigPaths(),
   ],
   css: {
-    modules: {
-      localsConvention: 'camelCase',
-      generateScopedName: '[name]__[local]___[hash:base64:5]',
-    },
     preprocessorOptions: {
       scss: {
         implementation: sass,
-        additionalData: '@use "sass:math";',
       },
+    },
+    modules: {
+      localsConvention: 'camelCase',
     },
   },
   build: {
+    target: 'esnext',
     rollupOptions: {
-      external: ['path', 'virtual:uno.css?__remix_sideEffect__'],
-      output: {
-        manualChunks: undefined,
-      },
+      external: [
+        'path',
+        'virtual:uno.css?__remix_sideEffect__',
+        'virtual:uno.css',
+      ],
     },
+    assetsInlineLimit: 0,
   },
   resolve: {
-    alias: {
-      '~': resolve(__dirname, './app'),
-      '/icons': resolve(__dirname, './public/icons'),
-    },
+    alias: [
+      { find: '~', replacement: resolve(__dirname, 'app') },
+      { find: '/icons', replacement: resolve(__dirname, 'public/icons') },
+    ],
   },
-  optimizeDeps: {
-    exclude: ['virtual:uno.css?__remix_sideEffect__'],
-  },
+  publicDir: 'public',
+  base: '/',
 });
